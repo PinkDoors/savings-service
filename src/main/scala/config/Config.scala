@@ -18,9 +18,12 @@ object ServerConfig {
 }
 
 final case class DbConfig(
-    mongoDbUri: String,
-    mongoDbName: String,
-    mongoDbSaveCollection: String
+    host: String,
+    port: Int,
+    user: String,
+    password: String,
+    dbName: String,
+    dbSaveCollection: String
 )
 
 object DbConfig {

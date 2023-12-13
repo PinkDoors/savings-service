@@ -2,53 +2,18 @@ package domain
 
 import derevo.circe.{decoder, encoder}
 import derevo.derive
+import io.circe.{Decoder, Encoder}
 
 import java.util.UUID
 
 @derive(encoder, decoder)
-final case class Save private (userId: UUID, novelId: UUID, node: UUID)
+final case class Save private (userId: UUID, novelId: UUID, nodeId: UUID)
 
 object Save {
-//  implicit val saveEncoder: Encoder[Save] = deriveEncoder[Save]
-//  implicit val saveDecoder: Decoder[Save] = deriveDecoder[Save]
+//  implicit val throwableEncoder: Encoder[UUID] =
+//    Encoder.encodeString.contramap(_.toString)
+//  implicit val throwableDecoder: Decoder[UUID] =
+//    Decoder.decodeString.map(UUID.fromString)
+//  implicit val saveEncoder: Encoder[UUID] = deriveEncoder[UUID]
+//  implicit val saveDecoder: Decoder[UUID] = deriveDecoder[UUID]
 }
-
-//object Employee {
-//
-//  def apply(firstName: String, lastName: String): Option[Employee] =
-//    Try(firstName.head.toLower + lastName.substring(0, 5).toLowerCase).toOption
-//      .map(id => Employee(id, firstName, lastName))
-//
-//}
-
-//object SaveRepository {
-//
-//  type EmployeeRepository = Has[EmployeeRepository.Service]
-//
-//  trait Service {
-//    def save(employee: Employee): IO[PersistenceFailure, Employee]
-//    def get(id: String): IO[PersistenceFailure, Option[Employee]]
-//    def getAll(): IO[PersistenceFailure, Seq[Employee]]
-//    def delete(id: String): IO[PersistenceFailure, Unit]
-//  }
-//
-//  sealed trait PersistenceFailure
-//  object PersistenceFailure {
-//    final case class UnexpectedPersistenceFailure(err: Throwable) extends PersistenceFailure
-//  }
-//
-//  //   accessor methods
-//  def save(
-//            employee: Employee
-//          ): ZIO[EmployeeRepository, PersistenceFailure, Employee] =
-//    ZIO.accessM(_.get.save(employee))
-//
-//  def get(id: String): ZIO[EmployeeRepository, PersistenceFailure, Option[Employee]] =
-//    ZIO.accessM(_.get.get(id))
-//
-//  def getAll(): ZIO[EmployeeRepository, PersistenceFailure, Seq[Employee]] =
-//    ZIO.accessM(_.get.getAll())
-//
-//  def delete(id: String): ZIO[EmployeeRepository, PersistenceFailure, Unit] =
-//    ZIO.accessM(_.get.delete(id))
-//}

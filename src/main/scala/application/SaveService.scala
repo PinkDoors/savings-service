@@ -13,8 +13,8 @@ trait SaveService[F[_]] {
 
 class SaveServiceImpl[F[_]](saveRepository: SaveRepository[F]) extends SaveService[F] {
 
-  override def createSave(userId: UUID, novelId: UUID, node: UUID): F[Either[AppError, Unit]] = {
-    val save = Save(userId, novelId, node)
+  override def createSave(userId: UUID, novelId: UUID, nodeId: UUID): F[Either[AppError, Unit]] = {
+    val save = Save(userId, novelId, nodeId)
     saveRepository.create(save)
   }
 

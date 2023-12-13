@@ -35,7 +35,7 @@ object errors {
     extends AppError(message = message)
 
   implicit val throwableEncoder: Encoder[Throwable] =
-    Encoder.encodeString.contramap(_.getMessage)
+    Encoder.encodeString.contramap(_.toString)
   implicit val throwableDecoder: Decoder[Throwable] =
     Decoder.decodeString.map(new Throwable(_))
   implicit val schema: Schema[AppError] =

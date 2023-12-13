@@ -14,7 +14,7 @@ object endpoints {
       .in("saves")
       .in(path[UUID]("userId"))
       .in(path[UUID]("novelId"))
-      .in(path[UUID]("node"))
+      .in(path[UUID]("nodeId"))
       .errorOut(jsonBody[AppError])
 
   val getSaveEndpoint: PublicEndpoint[(UUID, UUID), AppError, Save, Any] =
