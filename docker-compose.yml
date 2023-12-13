@@ -1,22 +1,6 @@
 version: '3.8'
 
 services:
-#  db:
-#    image: postgres
-#    restart: always
-#    ports:
-#      - "5432:5432"
-#    environment:
-#      POSTGRES_USER: postgres
-#      POSTGRES_PASSWORD: pass1234
-#      PGDATA: /data/postgres
-#      POSTGRES_DB: event_store
-#    healthcheck:
-#      test: "pg_isready -d $$POSTGRES_DB -U $$POSTGRES_USER"
-#      interval: 10s
-#      timeout: 5s
-#      retries: 5
-
   mongo:
     image: "mongo"
     restart: always
@@ -37,21 +21,3 @@ services:
       ME_CONFIG_BASICAUTH_USERNAME: user
       ME_CONFIG_BASICAUTH_PASSWORD: pass
       ME_CONFIG_MONGODB_URL: mongodb://root:root@mongo:27017/
-
-#  app:
-#    image: docker.io/library/ess:0.1.0-SNAPSHOT
-#    environment:
-#      DB_URL: db
-#      DB_USER: postgres
-#      DB_PASS: pass1234
-#      DB_NAME: event_store
-#      KAFKA_SERVER: kafka:9092
-#    ports:
-#      - "8080:8080"
-#    depends_on:
-#      - mongo
-
-#volumes:
-#  postgres:
-#  kafka-volume:
-#  zookeeper-volume:
