@@ -1,35 +1,48 @@
 package controllers
 
-import sttp.tapir.server.http4s._
-import cats.effect.IO
-import org.http4s.HttpRoutes
-import org.http4s.dsl.Http4sDsl
+import cats.Applicative
+import cats.implicits.toFunctorOps
+import domain.SaveService
+import domain.errors.AppError
+import sttp.tapir.server.ServerEndpoint
 
-class SaveController(saveService: SaveService) extends Http4sDsl[IO] {
-  val saveRoutes: HttpRoutes[IO] =
-    SaveEndpoints.allEndpoints.toRoutes {
-      case (_, (userId, novelId, node)) => createSave(userId, novelId, node)
-      case (_, (userId, novelId))        => getSave(userId, novelId)
-      case (_, (userId, novelId))        => deleteSave(userId, novelId)
-    }
+trait SaveController[F[_]] {
+  def create: ServerEndpoint[Any, F]
+  def get: ServerEndpoint[Any, F]
+  def delete: ServerEndpoint[Any, F]
 
-  private def createSave(userId: UUID, novelId: UUID, node: UUID): IO[Either[String, Unit]] =
-    saveService.createSave(userId, novelId, node).attempt.map {
-      case Right(_)    => Right(())
-      case Left(error) => Left(error.toString)
-    }
-
-  private def getSave(userId: UUID, novelId: UUID): IO[Option[Save]] =
-    saveService.getSave(userId, novelId)
-
-  private def deleteSave(userId: UUID, novelId: UUID): IO[Either[String, Unit]] =
-    saveService.deleteSave(userId, novelId).attempt.map {
-      case Right(_)    => Right(())
-      case Left(error) => Left(error.toString)
-    }
+  def getAllEndpoints: List[ServerEndpoint[Any, F]]
+//  def createTodo: ServerEndpoint[Any, F]
+//
+//  def all: List[ServerEndpoint[Any, F]]
 }
 
 object SaveController {
-  def apply(saveService: SaveService): SaveController =
-    new SaveController(saveService)
+  final private class Impl[F[_]: Applicative](saveService: SaveService[F]) extends SaveController[F] {
+
+    override val create: ServerEndpoint[Any, F] =
+      endpoints.createSaveEndpoint.serverLogic((userId) =>
+        saveService.createSave(userId._1, userId._2, userId._3).map(_.left.map[AppError](identity))
+        //          storage.list.leftMapIn(identity[AppError])
+      )
+
+    override val get: ServerEndpoint[Any, F] =
+      endpoints.getSaveEndpoint.serverLogic((userId) =>
+        saveService.getSave(userId._1, userId._2).map(_.left.map[AppError](identity))
+      )
+
+    override val delete: ServerEndpoint[Any, F] =
+      endpoints.deleteSaveEndpoint.serverLogic((userId) =>
+        saveService.deleteSave(userId._1, userId._2).map(_.left.map[AppError](identity))
+      )
+
+    override val getAllEndpoints: List[ServerEndpoint[Any, F]] =
+      List(
+        create,
+        get,
+        delete
+      )
+  }
+
+  def make[F[_]: Applicative](saveService: SaveService[F]): SaveController[F] = new Impl(saveService)
 }

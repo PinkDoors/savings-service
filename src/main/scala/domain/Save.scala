@@ -1,8 +1,17 @@
 package domain
 
+import derevo.circe.{decoder, encoder}
+import derevo.derive
+
 import java.util.UUID
 
+@derive(encoder, decoder)
 final case class Save private (userId: UUID, novelId: UUID, node: UUID)
+
+object Save {
+//  implicit val saveEncoder: Encoder[Save] = deriveEncoder[Save]
+//  implicit val saveDecoder: Decoder[Save] = deriveDecoder[Save]
+}
 
 //object Employee {
 //

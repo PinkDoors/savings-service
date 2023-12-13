@@ -1,15 +1,14 @@
 package domain
 
-import cats.effect.IO
-import domain.errors.{AppError, SaveAlreadyExists, SaveNotFound}
+import domain.errors.AppError
 
 import java.util.UUID
 
 
-trait SaveRepository {
-  def create(employee: Save): IO[Either[AppError, Unit]]
+trait SaveRepository[F[_]] {
+  def create(employee: Save): F[Either[AppError, Unit]]
 
-  def get(userId: UUID, novelId: UUID): IO[Option[Save]]
+  def get(userId: UUID, novelId: UUID): F[Either[AppError, Save]]
 
-  def delete(userId: UUID, novelId: UUID): IO[Either[AppError, Unit]]
+  def delete(userId: UUID, novelId: UUID): F[Either[AppError, Unit]]
 }
