@@ -1,0 +1,5 @@
+target
+*.iml
+/.idea
+metals.sbt
+.DS_Store
