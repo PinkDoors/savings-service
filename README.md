@@ -22,7 +22,7 @@ Savings-service является CRUD-системой для сохранени
 ## Как запустить то, то уже работает
 
 * docker-compose up -d (для запуски mongo)
-* Запустить само приложение
+* sbt run
 
 http://localhost:8080/docs - swagger сервиса
 http://localhost:8081/ - mongo express. Креды: user, pass
