@@ -14,6 +14,7 @@ libraryDependencies ++= Seq(
   "tf.tofu" %% "tofu-logging-structured" % "0.12.0.1",
   "tf.tofu" %% "tofu-core-ce3" % "0.12.0.1",
   "tf.tofu" %% "tofu-doobie-logging-ce3" % "0.12.0.1",
+  "tf.tofu" %% "derevo-pureconfig" % "0.13.0",
   "com.softwaremill.sttp.client3" %% "core" % "3.8.15",
   "tf.tofu" %% "derevo-circe" % "0.13.0",
   "io.estatico" %% "newtype" % "0.4.4",

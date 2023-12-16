@@ -1,37 +1,59 @@
 package controllers
 
-import domain.Save
-import domain.errors._
+import controllers.dto.createSave.CreateSaveRequest
+import controllers.dto.deleteSave.DeleteSaveRequest
+import controllers.dto.getSave.{GetSaveRequest, GetSaveResponse}
+import controllers.errors.{
+  ApiError,
+  ConflictClientError,
+  NotFoundClientError,
+  ServerError
+}
+import sttp.model.StatusCode
 import sttp.tapir._
-import sttp.tapir.generic.auto._
 import sttp.tapir.json.circe.jsonBody
 
-import java.util.UUID
-
 object endpoints {
-  val createSaveEndpoint: PublicEndpoint[(UUID, UUID, UUID), AppError, Unit, Any] =
-    endpoint.post
-      .in("saves")
-      .in(path[UUID]("userId"))
-      .in(path[UUID]("novelId"))
-      .in(path[UUID]("nodeId"))
-      .errorOut(jsonBody[AppError])
+  private val apiErrorEndpoint: PublicEndpoint[Unit, ApiError, Unit, Any] =
+    endpoint
+      .errorOut(
+        oneOf[ApiError](
+          oneOfVariant(
+            StatusCode.InternalServerError,
+            jsonBody[ServerError]
+          ),
+          oneOfVariant(
+            StatusCode.Conflict,
+            jsonBody[ConflictClientError]
+          ),
+          oneOfVariant(
+            StatusCode.NotFound,
+            jsonBody[NotFoundClientError]
+          )
+        )
+      )
 
-  val getSaveEndpoint: PublicEndpoint[(UUID, UUID), AppError, Save, Any] =
-    endpoint.get
-      .in("saves")
-      .in(path[UUID]("userId"))
-      .in(path[UUID]("novelId"))
-      .errorOut(jsonBody[AppError])
-      .out(jsonBody[Save])
+  val createSaveEndpoint
+      : PublicEndpoint[CreateSaveRequest, ApiError, Unit, Any] =
+    apiErrorEndpoint.post
+      .in("save")
+      .in(jsonBody[CreateSaveRequest])
 
-  val deleteSaveEndpoint: PublicEndpoint[(UUID, UUID), AppError, Unit, Any] =
-    endpoint.delete
-      .in("saves")
-      .in(path[UUID]("userId"))
-      .in(path[UUID]("novelId"))
-      .errorOut(jsonBody[AppError])
-      .out(jsonBody[Unit])
+//  val params = (path[UUID]("userId") and path[UUID]("novelId") and path[UUID]("nodeId"))
+//    .map()
+
+  val getSaveEndpoint
+      : PublicEndpoint[GetSaveRequest, ApiError, GetSaveResponse, Any] =
+    apiErrorEndpoint.get
+      .in("save")
+      .in(jsonBody[GetSaveRequest])
+      .out(jsonBody[GetSaveResponse])
+
+  val deleteSaveEndpoint
+      : PublicEndpoint[DeleteSaveRequest, ApiError, Unit, Any] =
+    apiErrorEndpoint.delete
+      .in("save")
+      .in(jsonBody[DeleteSaveRequest])
 
   val allEndpoints: List[PublicEndpoint[_, _, _, _]] =
     List(
