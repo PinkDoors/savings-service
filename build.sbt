@@ -1,3 +1,5 @@
+import Dependencies.tapir
+
 ThisBuild / version := "0.1.0-SNAPSHOT"
 
 ThisBuild / scalaVersion := "2.13.12"
@@ -26,21 +28,21 @@ libraryDependencies ++= Seq(
   "com.softwaremill.sttp.tapir" %% "tapir-derevo" % "1.9.2",
   "com.tethys-json" %% "tethys" % "0.26.0",
   "com.tethys-json" %% "tethys-derivation" % "0.26.0",
-  "com.softwaremill.sttp.client3" %% "core" % "3.8.15",
-  "com.softwaremill.sttp.client3" %% "async-http-client-backend-cats" % "3.8.15",
-  "com.softwaremill.sttp.tapir" %% "tapir-sttp-client" % "1.9.2",
-  "com.softwaremill.sttp.tapir" %% "tapir-cats-effect" % "1.9.2",
-  "com.softwaremill.sttp.tapir" %% "tapir-prometheus-metrics" % "1.9.2",
-  "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % "1.9.2",
-  "com.softwaremill.sttp.tapir" %% "tapir-json-circe" % "1.9.2",
-  "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui" % "1.9.2",
-  "com.softwaremill.sttp.tapir" %% "tapir-openapi-docs" % "1.9.2",
-  "com.softwaremill.sttp.tapir" %% "tapir-sttp-stub-server" % "1.9.2" % Test,
-  "com.softwaremill.sttp.tapir" %% "tapir-json-tethys" % "1.9.2",
-  "com.softwaremill.sttp.tapir" %% "tapir-core" % "1.9.2",
-  "com.softwaremill.sttp.tapir" %% "tapir-http4s-server" % "1.9.2",
-  "com.softwaremill.sttp.client3" %% "circe" % "3.9.1" % Test
-)
+//  "com.softwaremill.sttp.client3" %% "core" % "3.8.15",
+//  "com.softwaremill.sttp.client3" %% "async-http-client-backend-cats" % "3.8.15",
+//  "com.softwaremill.sttp.tapir" %% "tapir-sttp-client" % "1.9.2",
+//  "com.softwaremill.sttp.tapir" %% "tapir-cats-effect" % "1.9.2",
+//  "com.softwaremill.sttp.tapir" %% "tapir-prometheus-metrics" % "1.9.2",
+//  "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % "1.9.2",
+//  "com.softwaremill.sttp.tapir" %% "tapir-json-circe" % "1.9.2",
+//  "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui" % "1.9.2",
+//  "com.softwaremill.sttp.tapir" %% "tapir-openapi-docs" % "1.9.2",
+//  "com.softwaremill.sttp.tapir" %% "tapir-sttp-stub-server" % "1.9.2" % Test,
+//  "com.softwaremill.sttp.tapir" %% "tapir-json-tethys" % "1.9.2",
+//  "com.softwaremill.sttp.tapir" %% "tapir-core" % "1.9.2",
+//  "com.softwaremill.sttp.tapir" %% "tapir-http4s-server" % "1.9.2",
+//  "com.softwaremill.sttp.client3" %% "circe" % "3.9.1" % Test
+) ++ tapir.modules
 
 scalacOptions ++= Seq("-Ymacro-annotations")
 
