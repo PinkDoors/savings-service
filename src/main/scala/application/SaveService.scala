@@ -8,6 +8,7 @@ import java.util.UUID
 trait SaveService[F[_]] {
   def createSave(userId: UUID, novelId: UUID, node: UUID): F[Either[SaveAlreadyExists, Unit]]
   def getSave(userId: UUID, novelId: UUID): F[Option[Save]]
+  def updateSave(userId: UUID, novelId: UUID, newNodeId:UUID): F[Either[SaveNotFound, Unit]]
   def deleteSave(userId: UUID, novelId: UUID): F[Either[SaveNotFound, Unit]]
 }
 
@@ -20,6 +21,10 @@ class SaveServiceImpl[F[_]](saveRepository: SaveRepository[F]) extends SaveServi
 
   override def getSave(userId: UUID, novelId: UUID): F[Option[Save]] = {
     saveRepository.get(userId, novelId)
+  }
+
+  override def updateSave(userId: UUID, novelId: UUID, newNodeId: UUID): F[Either[SaveNotFound, Unit]] = {
+    saveRepository.update(userId, novelId, newNodeId)
   }
 
   override def deleteSave(userId: UUID, novelId: UUID): F[Either[SaveNotFound, Unit]] = {

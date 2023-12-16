@@ -13,6 +13,7 @@ import tofu.syntax.handle._
 trait SaveController[F[_]] {
   def create: ServerEndpoint[Any, F]
   def get: ServerEndpoint[Any, F]
+  def update: ServerEndpoint[Any, F]
   def delete: ServerEndpoint[Any, F]
 
   def getAllEndpoints: List[ServerEndpoint[Any, F]]
@@ -48,6 +49,17 @@ object SaveController {
           .handle[Throwable](ex => {
             println(ex.getMessage)
             ServerError("Unexpected Error").asLeft[GetSaveResponse]
+          })
+      )
+
+    override val update: ServerEndpoint[Any, F] =
+      endpoints.updateSaveEndpoint.serverLogic(updateSaveRequest =>
+        saveService
+          .updateSave(updateSaveRequest.userId, updateSaveRequest.novelId, updateSaveRequest.newNodeId)
+          .map(_.left.map[ApiError](err => NotFoundClientError(err.message)))
+          .handle[Throwable](ex => {
+            println(ex.getMessage)
+            ServerError("Unexpected Error").asLeft[Unit]
           })
       )
 
