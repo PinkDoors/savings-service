@@ -23,5 +23,6 @@ build:
 test:
   stage: test
   script:
+    - export DOCKER_HOST="tcp://docker:2375"
     - sbt "project integration_tests" IntegrationTest/test
 
