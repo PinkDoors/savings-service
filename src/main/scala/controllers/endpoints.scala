@@ -47,7 +47,7 @@ object endpoints {
 
   val updateSaveEndpoint
   : PublicEndpoint[UpdateSaveRequest, ApiError, Unit, Any] =
-    apiErrorEndpoint.get
+    apiErrorEndpoint.put
       .in("save")
       .in(jsonBody[UpdateSaveRequest])
 

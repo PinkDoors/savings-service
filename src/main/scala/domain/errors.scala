@@ -16,14 +16,14 @@ object errors {
   )
 
   @derive(encoder, decoder)
-  case class SaveAlreadyExists()
+  case class SaveAlreadyExists(userId: UUID, novelId: UUID)
     extends AppError(
-      "Save for given userId and novelId already exists."
+      s"Save for userId: $userId and novelId: $novelId already exists."
     )
 
   @derive(encoder, decoder)
-  case class SaveNotFound()
+  case class SaveNotFound(userId: UUID, novelId: UUID)
     extends AppError(
-      s"Save for given userId and novelId not found."
+      s"Save for userId: $userId and novelId: $novelId was not found."
     )
 }

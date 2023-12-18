@@ -1,6 +1,19 @@
 version: '3.8'
 
 services:
+  app:
+    image: docker.io/library/project:0.1.0-SNAPSHOT
+    environment:
+      DB_URL: db
+      DB_USER: postgres
+      DB_PASS: pass1234
+      DB_NAME: event_store
+      KAFKA_SERVER: kafka:9092
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+
   mongo:
     image: "mongo"
     restart: always

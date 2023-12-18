@@ -1,4 +1,5 @@
-import application.SaveServiceImpl
+import application.SaveService
+import cats.Id
 import cats.effect.{ExitCode, IO, IOApp, Resource}
 import com.comcast.ip4s.{IpLiteralSyntax, Ipv4Address, Port}
 import config.AppConfig
@@ -11,24 +12,25 @@ import sttp.tapir.docs.openapi.OpenAPIDocsInterpreter
 import sttp.tapir.server.http4s.Http4sServerInterpreter
 import sttp.tapir.swagger.SwaggerUI
 import tofu.logging.Logging
+import tofu.logging.Logging
+import tofu.logging.derivation.loggable
 
 object Main extends IOApp {
 
-  private type Init[A] = IO[A]
   private type App[A] = IO[A]
 
   private val mainLogs =
     Logging.Make.plain[IO].byName("Main")
+  implicit val logMake: Logging.Make[IO] = Logging.Make.plain[IO]
 
   override def run(args: List[String]): IO[ExitCode] =
     (for {
       _ <- Resource.eval(mainLogs.info("Starting saving service...."))
       config <- Resource.eval(AppConfig.load)
 
-      userRepository = MongoSaveRepository[App](config.db)
-      saveService = new SaveServiceImpl[App](userRepository)
-
-      controller = SaveController.make(saveService)
+      saveRepository = MongoSaveRepository[App](config.db)
+      saveService = SaveService.make[App](saveRepository)
+      controller = SaveController.make[App](saveService)
 
       openApi = OpenAPIDocsInterpreter()
         .toOpenAPI(es = controller.getAllEndpoints.map(_.endpoint), "savings-service", "1.0")

@@ -1,14 +1,16 @@
 package controllers
 
 import application.SaveService
-import cats.Applicative
 import cats.implicits.{catsSyntaxEitherId, toFunctorOps}
+import cats.{Applicative, Id}
 import controllers.dto.getSave.GetSaveResponse
 import controllers.errors.{ApiError, ConflictClientError, NotFoundClientError, ServerError}
-import domain.Save
 import sttp.tapir.server.ServerEndpoint
 import tofu.Handle
+import tofu.logging.Logging
+import tofu.logging.Logging.Make
 import tofu.syntax.handle._
+import tofu.syntax.logging._
 
 trait SaveController[F[_]] {
   def create: ServerEndpoint[Any, F]
@@ -21,8 +23,7 @@ trait SaveController[F[_]] {
 
 object SaveController {
   final private class Impl[F[_]: Applicative](saveService: SaveService[F])(
-      implicit handle: Handle[F, Throwable]
-  ) extends SaveController[F] {
+      implicit handle: Handle[F, Throwable], logging: Logging[F]) extends SaveController[F] {
 
     override val create: ServerEndpoint[Any, F] =
       endpoints.createSaveEndpoint.serverLogic(createSaveRequest => {
@@ -33,9 +34,8 @@ object SaveController {
             createSaveRequest.nodeId
           )
           .map(_.left.map[ApiError](err => ConflictClientError(err.message)))
-          // TODO: Add logging
           .handle[Throwable](ex => {
-            println(ex.getMessage)
+            error"CreateSave exception: ${ex.getMessage}"
             ServerError("Unexpected Error").asLeft[Unit]
           })
       })
@@ -45,9 +45,8 @@ object SaveController {
         saveService
           .getSave(getSaveRequest.userId, getSaveRequest.novelId)
           .map(x => GetSaveResponse(x).asRight[ApiError])
-          // TODO: Add logging
           .handle[Throwable](ex => {
-            println(ex.getMessage)
+            error"GetSave exception: ${ex.getMessage}"
             ServerError("Unexpected Error").asLeft[GetSaveResponse]
           })
       )
@@ -58,7 +57,7 @@ object SaveController {
           .updateSave(updateSaveRequest.userId, updateSaveRequest.novelId, updateSaveRequest.newNodeId)
           .map(_.left.map[ApiError](err => NotFoundClientError(err.message)))
           .handle[Throwable](ex => {
-            println(ex.getMessage)
+            error"UpdateSave exception: ${ex.getMessage}"
             ServerError("Unexpected Error").asLeft[Unit]
           })
       )
@@ -69,7 +68,7 @@ object SaveController {
           .deleteSave(deleteSaveRequest.userId, deleteSaveRequest.novelId)
           .map(_.left.map[ApiError](err => NotFoundClientError(err.message)))
           .handle[Throwable](ex => {
-            println(ex.getMessage)
+            error"DeleteSave exception: ${ex.getMessage}"
             ServerError("Unexpected Error").asLeft[Unit]
           })
       )
@@ -78,12 +77,17 @@ object SaveController {
       List(
         create,
         get,
-        delete
+        delete,
+        update
       )
   }
 
-  def make[F[_]: Applicative](saveService: SaveService[F])(implicit
+  def make[F[_]: Applicative: Logging.Make](saveService: SaveService[F])(implicit
       handle: Handle[F, Throwable]
   ): SaveController[F] =
-    new Impl(saveService)
+    {
+      val logs: Make[F] = Logging.Make[F]
+      implicit val logging: Id[Logging[F]] = logs.forService[SaveController[F]]
+      new Impl(saveService)
+    }
 }

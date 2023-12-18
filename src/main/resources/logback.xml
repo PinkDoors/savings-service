@@ -1,0 +1,20 @@
+<configuration>
+
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Устанавливаем уровень логирования INFO для логгера tofu -->
+    <logger name="Main" level="INFO" />
+    <logger name="application.SaveService" level="INFO" />
+    <logger name="controllers.SaveController" level="INFO" />
+
+    <!-- Устанавливаем уровень логирования ERROR для всех остальных логгеров -->
+    <root level="WARN">
+        <appender-ref ref="STDOUT" />
+    </root>
+
+</configuration>

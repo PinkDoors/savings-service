@@ -28,7 +28,7 @@ class MongoSaveRepository[F[_]: Async](config: DbConfig)
           .limit(1)
           .all
         createResult <- findResult.headOption match {
-          case Some(_) => Sync[F].pure(SaveAlreadyExists().asLeft[Unit])
+          case Some(_) => Sync[F].pure(SaveAlreadyExists(save.userId, save.novelId).asLeft[Unit])
           case None =>
             coll.insertOne(save).map(x => ().asRight[SaveAlreadyExists])
         }
@@ -74,7 +74,7 @@ class MongoSaveRepository[F[_]: Async](config: DbConfig)
 
     findAndUpdateResult.map {
       case Some(_) => ().asRight[SaveNotFound]
-      case None    => SaveNotFound().asLeft[Unit]
+      case None    => SaveNotFound(userId, novelId).asLeft[Unit]
     }
   }
 
@@ -98,7 +98,7 @@ class MongoSaveRepository[F[_]: Async](config: DbConfig)
       if (result.getDeletedCount > 0) {
         Right()
       } else {
-        Left(SaveNotFound())
+        Left(SaveNotFound(userId, novelId))
       }
     }
   }
