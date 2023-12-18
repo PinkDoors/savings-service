@@ -44,7 +44,7 @@ class MongoSaveRepository[F[_]: Async](config: DbConfig)
           coll <- db.getCollectionWithCodec[Save](config.dbSaveCollection)
           findResult <- coll.find
             .filter(
-              Filter.eq("userId", userId) && Filter.eq("novelId", novelId)
+              Filter.eq("userId", userId.toString) && Filter.eq("novelId", novelId.toString)
             )
             .limit(1)
             .all
