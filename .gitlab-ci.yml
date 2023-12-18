@@ -18,5 +18,5 @@ build:
 test:
   stage: test
   script:
-    - sbt "project integration_tests" test
+    - sbt "project integration_tests" IntegrationTest/test
 

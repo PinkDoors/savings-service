@@ -20,11 +20,12 @@ lazy val root = (project in file("."))
 
 lazy val integration_tests = (project in file("integration-tests"))
   .dependsOn(root)
+  .configs(IntegrationTest)
   .settings(
     Defaults.itSettings,
     Test / fork := true,
     libraryDependencies ++= Seq(
-      "org.scalatest" %% "scalatest" % "3.2.17" % Test,
-      "com.dimafeng" %% "testcontainers-scala-scalatest" % "0.40.12" % Test,
-      "com.dimafeng" %% "testcontainers-scala-mongodb" % "0.40.12" % Test),
+      "org.scalatest" %% "scalatest" % "3.2.17" % IntegrationTest,
+      "com.dimafeng" %% "testcontainers-scala-scalatest" % "0.40.12" % IntegrationTest,
+      "com.dimafeng" %% "testcontainers-scala-mongodb" % "0.40.12" % IntegrationTest),
     dependencyOverrides += "io.circe" %% "circe-core" % "0.14.3")
