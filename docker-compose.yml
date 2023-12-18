@@ -2,13 +2,7 @@ version: '3.8'
 
 services:
   app:
-    image: docker.io/library/project:0.1.0-SNAPSHOT
-    environment:
-      DB_URL: db
-      DB_USER: postgres
-      DB_PASS: pass1234
-      DB_NAME: event_store
-      KAFKA_SERVER: kafka:9092
+    image: docker.io/library/savings-service:0.1.0-SNAPSHOT
     ports:
       - "8080:8080"
     depends_on:

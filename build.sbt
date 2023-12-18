@@ -13,9 +13,12 @@ scalacOptions ++= Seq("-Ymacro-annotations")
 
 dependencyOverrides += "io.circe" %% "circe-core" % "0.14.3"
 
+enablePlugins(JavaAppPackaging)
+enablePlugins(DockerPlugin)
+
 lazy val root = (project in file("."))
   .settings(
-    name := "Project"
+    name := "savings-service"
   )
 
 lazy val integration_tests = (project in file("integration-tests"))

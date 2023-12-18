@@ -21,10 +21,6 @@ final case class NotFoundClientError(
     message: String
 ) extends ApiError
 
-//final case class UnauthorizedApiError(
-//                                       message: String
-//                                     ) extends ApiError
-
 object ApiError {
   implicit val conflictBusinessApiErrorSchema: Schema[ConflictClientError] =
     Schema.derived
