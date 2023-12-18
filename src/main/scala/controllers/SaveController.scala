@@ -51,7 +51,7 @@ object SaveController {
     override val get: ServerEndpoint[Any, F] =
       endpoints.getSaveEndpoint.serverLogic(getSaveRequest =>
         saveService
-          .getSave(getSaveRequest.userId, getSaveRequest.novelId)
+          .getSave(getSaveRequest._1, getSaveRequest._2)
           .map(x => GetSaveResponse(x).asRight[ApiError])
           .handle[Throwable](ex => {
             error"GetSave exception: ${ex.getMessage}"
