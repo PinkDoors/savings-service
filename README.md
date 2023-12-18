@@ -9,13 +9,13 @@
 Таким образом, у нас есть сущности user, novel, node. И мы должны с ними работать по их Id (UUID).
 Savings-service является CRUD-системой для сохранений визуальных новелл.
 
-## Как запускать
+# Как запускать
 
 * sbt docker:publishLocal
 * docker-compose up -d
 * sbt "project integration_tests" IntegrationTest/test (Тесты)
 
-http://localhost:8080/docs - swagger сервиса
+http://localhost:8080/docs/ - swagger сервиса  
 http://localhost:8081/ - mongo express. Креды: user, pass
 
 # Индивидуальные проекты
