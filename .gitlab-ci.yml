@@ -14,6 +14,7 @@ build:
 
 test:
   stage: test
-#  script:
+  script:
+    - echo "Enable Docker to run integration tests..."
 #    - sbt "project integration_tests" IntegrationTest/test
 
