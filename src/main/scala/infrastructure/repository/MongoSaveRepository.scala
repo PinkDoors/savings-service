@@ -4,7 +4,6 @@ import cats.effect.Async
 import cats.effect.kernel.Sync
 import cats.syntax.all._
 import config.DbConfig
-import controllers.errors.ApiError
 import domain.errors.{SaveAlreadyExists, SaveNotFound}
 import domain.{Save, SaveRepository}
 import mongo4cats.circe._
@@ -28,7 +27,9 @@ class MongoSaveRepository[F[_]: Async](config: DbConfig)
           .limit(1)
           .all
         createResult <- findResult.headOption match {
-          case Some(_) => Sync[F].pure(SaveAlreadyExists(save.userId, save.novelId).asLeft[Unit])
+          case Some(_) =>
+            Sync[F]
+              .pure(SaveAlreadyExists(save.userId, save.novelId).asLeft[Unit])
           case None =>
             coll.insertOne(save).map(x => ().asRight[SaveAlreadyExists])
         }
@@ -44,7 +45,8 @@ class MongoSaveRepository[F[_]: Async](config: DbConfig)
           coll <- db.getCollectionWithCodec[Save](config.dbSaveCollection)
           findResult <- coll.find
             .filter(
-              Filter.eq("userId", userId.toString) && Filter.eq("novelId", novelId.toString)
+              Filter.eq("userId", userId.toString) && Filter
+                .eq("novelId", novelId.toString)
             )
             .limit(1)
             .all

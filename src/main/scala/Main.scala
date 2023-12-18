@@ -1,5 +1,4 @@
 import application.SaveService
-import cats.Id
 import cats.effect.{ExitCode, IO, IOApp, Resource}
 import com.comcast.ip4s.{IpLiteralSyntax, Ipv4Address, Port}
 import config.AppConfig
@@ -12,8 +11,6 @@ import sttp.tapir.docs.openapi.OpenAPIDocsInterpreter
 import sttp.tapir.server.http4s.Http4sServerInterpreter
 import sttp.tapir.swagger.SwaggerUI
 import tofu.logging.Logging
-import tofu.logging.Logging
-import tofu.logging.derivation.loggable
 
 object Main extends IOApp {
 
@@ -33,10 +30,16 @@ object Main extends IOApp {
       controller = SaveController.make[App](saveService)
 
       openApi = OpenAPIDocsInterpreter()
-        .toOpenAPI(es = controller.getAllEndpoints.map(_.endpoint), "savings-service", "1.0")
+        .toOpenAPI(
+          es = controller.getAllEndpoints.map(_.endpoint),
+          "savings-service",
+          "1.0"
+        )
         .toYaml
 
-      routes = Http4sServerInterpreter[IO]().toRoutes(controller.getAllEndpoints ++ SwaggerUI[IO](openApi))
+      routes = Http4sServerInterpreter[IO]().toRoutes(
+        controller.getAllEndpoints ++ SwaggerUI[IO](openApi)
+      )
       httpApp = Router("/" -> routes).orNotFound
       _ <- EmberServerBuilder
         .default[IO]
@@ -48,4 +51,3 @@ object Main extends IOApp {
         .build
     } yield ()).useForever.as(ExitCode.Success)
 }
-

@@ -73,7 +73,7 @@ object SaveService {
     ): F[Either[SaveAlreadyExists, Unit]] = for {
       result <- service.createSave(userId, novelId, nodeId)
       _ <- result match {
-        case Right(_) => info"CreateSave success."
+        case Right(_)    => info"CreateSave success."
         case Left(error) => info"CreateSave error: ${error.message}"
       }
     } yield result

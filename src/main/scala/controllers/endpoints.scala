@@ -4,7 +4,12 @@ import controllers.dto.createSave.CreateSaveRequest
 import controllers.dto.deleteSave.DeleteSaveRequest
 import controllers.dto.getSave.{GetSaveRequest, GetSaveResponse}
 import controllers.dto.updateSave.UpdateSaveRequest
-import controllers.errors.{ApiError, ConflictClientError, NotFoundClientError, ServerError}
+import controllers.errors.{
+  ApiError,
+  ConflictClientError,
+  NotFoundClientError,
+  ServerError
+}
 import sttp.model.StatusCode
 import sttp.tapir._
 import sttp.tapir.json.circe.jsonBody
@@ -35,9 +40,6 @@ object endpoints {
       .in("save")
       .in(jsonBody[CreateSaveRequest])
 
-//  val params = (path[UUID]("userId") and path[UUID]("novelId") and path[UUID]("nodeId"))
-//    .map()
-
   val getSaveEndpoint
       : PublicEndpoint[GetSaveRequest, ApiError, GetSaveResponse, Any] =
     apiErrorEndpoint.get
@@ -46,7 +48,7 @@ object endpoints {
       .out(jsonBody[GetSaveResponse])
 
   val updateSaveEndpoint
-  : PublicEndpoint[UpdateSaveRequest, ApiError, Unit, Any] =
+      : PublicEndpoint[UpdateSaveRequest, ApiError, Unit, Any] =
     apiErrorEndpoint.put
       .in("save")
       .in(jsonBody[UpdateSaveRequest])

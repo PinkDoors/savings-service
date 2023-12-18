@@ -4,7 +4,12 @@ import application.SaveService
 import cats.implicits.{catsSyntaxEitherId, toFunctorOps}
 import cats.{Applicative, Id}
 import controllers.dto.getSave.GetSaveResponse
-import controllers.errors.{ApiError, ConflictClientError, NotFoundClientError, ServerError}
+import controllers.errors.{
+  ApiError,
+  ConflictClientError,
+  NotFoundClientError,
+  ServerError
+}
 import sttp.tapir.server.ServerEndpoint
 import tofu.Handle
 import tofu.logging.Logging
@@ -23,7 +28,10 @@ trait SaveController[F[_]] {
 
 object SaveController {
   final private class Impl[F[_]: Applicative](saveService: SaveService[F])(
-      implicit handle: Handle[F, Throwable], logging: Logging[F]) extends SaveController[F] {
+      implicit
+      handle: Handle[F, Throwable],
+      logging: Logging[F]
+  ) extends SaveController[F] {
 
     override val create: ServerEndpoint[Any, F] =
       endpoints.createSaveEndpoint.serverLogic(createSaveRequest => {
@@ -54,7 +62,11 @@ object SaveController {
     override val update: ServerEndpoint[Any, F] =
       endpoints.updateSaveEndpoint.serverLogic(updateSaveRequest =>
         saveService
-          .updateSave(updateSaveRequest.userId, updateSaveRequest.novelId, updateSaveRequest.newNodeId)
+          .updateSave(
+            updateSaveRequest.userId,
+            updateSaveRequest.novelId,
+            updateSaveRequest.newNodeId
+          )
           .map(_.left.map[ApiError](err => NotFoundClientError(err.message)))
           .handle[Throwable](ex => {
             error"UpdateSave exception: ${ex.getMessage}"
@@ -82,12 +94,11 @@ object SaveController {
       )
   }
 
-  def make[F[_]: Applicative: Logging.Make](saveService: SaveService[F])(implicit
-      handle: Handle[F, Throwable]
-  ): SaveController[F] =
-    {
-      val logs: Make[F] = Logging.Make[F]
-      implicit val logging: Id[Logging[F]] = logs.forService[SaveController[F]]
-      new Impl(saveService)
-    }
+  def make[F[_]: Applicative: Logging.Make](saveService: SaveService[F])(
+      implicit handle: Handle[F, Throwable]
+  ): SaveController[F] = {
+    val logs: Make[F] = Logging.Make[F]
+    implicit val logging: Id[Logging[F]] = logs.forService[SaveController[F]]
+    new Impl(saveService)
+  }
 }

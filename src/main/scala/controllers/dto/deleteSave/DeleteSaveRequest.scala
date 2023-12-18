@@ -7,7 +7,7 @@ import sttp.tapir.Schema
 import java.util.UUID
 
 @derive(encoder, decoder)
-case class DeleteSaveRequest (userId: UUID, novelId: UUID)
+case class DeleteSaveRequest(userId: UUID, novelId: UUID)
 
 object DeleteSaveRequest {
   implicit lazy val schema: Schema[DeleteSaveRequest] = Schema.derived
