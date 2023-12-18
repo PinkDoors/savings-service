@@ -43,6 +43,8 @@ object SaveController {
           )
           .map(_.left.map[ApiError](err => ConflictClientError(err.message)))
           .handle[Throwable](ex => {
+            // Don't know why but logger does not produce logs, will fix later, println will do for now
+            println(ex.getMessage)
             error"CreateSave exception: ${ex.getMessage}"
             ServerError("Unexpected Error").asLeft[Unit]
           })
@@ -54,6 +56,8 @@ object SaveController {
           .getSave(getSaveRequest._1, getSaveRequest._2)
           .map(x => GetSaveResponse(x).asRight[ApiError])
           .handle[Throwable](ex => {
+            // Don't know why but logger does not produce logs, will fix later, println will do for now
+            println(ex.getMessage)
             error"GetSave exception: ${ex.getMessage}"
             ServerError("Unexpected Error").asLeft[GetSaveResponse]
           })
@@ -69,6 +73,8 @@ object SaveController {
           )
           .map(_.left.map[ApiError](err => NotFoundClientError(err.message)))
           .handle[Throwable](ex => {
+            // Don't know why but logger does not produce logs, will fix later, println will do for now
+            println(ex.getMessage)
             error"UpdateSave exception: ${ex.getMessage}"
             ServerError("Unexpected Error").asLeft[Unit]
           })
@@ -80,6 +86,8 @@ object SaveController {
           .deleteSave(deleteSaveRequest.userId, deleteSaveRequest.novelId)
           .map(_.left.map[ApiError](err => NotFoundClientError(err.message)))
           .handle[Throwable](ex => {
+            // Don't know why but logger does not produce logs, will fix later, println will do for now
+            println(ex.getMessage)
             error"DeleteSave exception: ${ex.getMessage}"
             ServerError("Unexpected Error").asLeft[Unit]
           })
