@@ -1,6 +1,6 @@
 image: sbtscala/scala-sbt:eclipse-temurin-jammy-19.0.1_10_1.9.4_2.13.11
 
-TC_CLOUD_TOKEN: ***********************************************
+TC_CLOUD_TOKEN: "aj_tcc_svc_Ng8FUmMDrzsr8LNC6kADcaUXxewyVCMKsJye2FMsHh74c"
 
 stages:
   - build
@@ -17,6 +17,6 @@ build:
 test:
   stage: test
   script:
-    - export DOCKER_HOST="tcp://docker:2375"
+  - curl -fsSL https://app.testcontainers.cloud/bash | bash
     - sbt "project integration_tests" IntegrationTest/test
 
